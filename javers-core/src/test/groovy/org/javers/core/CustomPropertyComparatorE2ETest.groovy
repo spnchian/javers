@@ -12,6 +12,7 @@ import org.javers.core.model.DummyAddress
 import org.javers.core.model.DummyUserWithValues
 import org.javers.core.model.GuavaObject
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import static org.javers.core.model.DummyAddress.Kind.HOME
 import static org.javers.core.model.DummyAddress.Kind.OFFICE
@@ -21,25 +22,25 @@ import static org.javers.core.model.DummyAddress.Kind.OFFICE
  */
 class CustomPropertyComparatorE2ETest extends Specification {
 
-    def "should support more than one custom comparator"(){
+    def "should support more than one custom comparator"() {
         given:
-        def left =  new DummyAddress(city:"NY", kind:HOME)
-        def right = new DummyAddress(city:"Paris", kind:OFFICE)
+        def left = new DummyAddress(city: "NY", kind: HOME)
+        def right = new DummyAddress(city: "Paris", kind: OFFICE)
 
         when:
         def javers = JaversBuilder.javers().build()
 
         then:
-        javers.compare(left,right).changes.size() == 2
+        javers.compare(left, right).changes.size() == 2
 
         when:
         javers = JaversBuilder.javers()
-                .registerCustomComparator( new DummyCustomPropertyComparator(), String)
-                .registerCustomComparator( new DummyCustomPropertyComparator(), DummyAddress.Kind)
+                .registerCustomComparator(new DummyCustomPropertyComparator(), String)
+                .registerCustomComparator(new DummyCustomPropertyComparator(), DummyAddress.Kind)
                 .build()
 
         then:
-        javers.compare(left,right).changes.size() == 0
+        javers.compare(left, right).changes.size() == 0
     }
 
     private class DummyCustomPropertyComparator implements CustomPropertyComparator {
@@ -48,7 +49,7 @@ class CustomPropertyComparatorE2ETest extends Specification {
         }
     }
 
-    def "should support custom comparator for Value types"(){
+    def "should support custom comparator for Value types"() {
         given:
         def left = new DummyUserWithValues("user", 10.11)
         def right = new DummyUserWithValues("user", 10.12)
@@ -57,25 +58,25 @@ class CustomPropertyComparatorE2ETest extends Specification {
         def javers = JaversBuilder.javers().build()
 
         then:
-        javers.compare(left,right).hasChanges()
+        javers.compare(left, right).hasChanges()
 
         when:
         javers = JaversBuilder.javers()
                 .registerCustomComparator(new CustomBigDecimalComparator(1), BigDecimal).build()
 
         then:
-        !javers.compare(left,right).hasChanges()
+        !javers.compare(left, right).hasChanges()
     }
 
     def "should support custom comparator for custom types"() {
         given:
-        def left =  new GuavaObject(multimap: Multimaps.forMap(["a":1]))
-        def right = new GuavaObject(multimap: Multimaps.forMap(["a":2]))
+        def left = new GuavaObject(multimap: Multimaps.forMap(["a": 1]))
+        def right = new GuavaObject(multimap: Multimaps.forMap(["a": 2]))
         def javers = JaversBuilder.javers()
                 .registerCustomComparator(new CustomMultimapFakeComparator(), Multimap).build()
 
         when:
-        def diff = javers.compare(left,right)
+        def diff = javers.compare(left, right)
 
         then:
         diff.changes.size() == 1
@@ -86,5 +87,27 @@ class CustomPropertyComparatorE2ETest extends Specification {
             changes[0].leftValue == 1
             changes[0].rightValue == 2
         }
+    }
+
+    @Unroll
+    def "should support custom comparator for objects stored in #containerType"() {
+        when:
+        def javers = JaversBuilder.javers().build()
+
+        then:
+        javers.compare(left, right).changes.size() == 1
+
+        when:
+        javers = JaversBuilder.javers()
+                .registerValueChangeCustomComparator(new DummyCustomPropertyComparator(), String)
+                .build()
+
+        then:
+        javers.compare(left, right).changes.size() == 0
+
+        where:
+        left           | right          | containerType
+        ["abc"]        | ["def"]        | List.class.simpleName
+        [1, "abc"]     | [1, "def"]     | Map.class.simpleName
     }
 }
