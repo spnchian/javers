@@ -1,11 +1,12 @@
 package org.javers.api;
 
-import org.javers.core.metamodel.object.CdoSnapshot;
+import org.javers.repository.jql.JqlQuery;
+import org.javers.repository.jql.QueryBBBB;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author pawel szymczyk
@@ -22,8 +23,10 @@ public class JaversApiController {
 
     @GetMapping(path = "/v1/snapshots", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
-    public SnapshotsResponse snapshots(@RequestParam String instanceId, @RequestParam String className) {
-        List<CdoSnapshot> snapshots = javersQueryService.findSnapshots(instanceId, className);
-        return new SnapshotsResponse(snapshots);
+    public SnapshotsResponse snapshots(HttpServletRequest request) {
+        Map<String, String[]> queryParameters = request.getParameterMap();
+        JqlQuery jqlQuery = QueryBBBB.parametersToJqlQuery(queryParameters);
+
+        return new SnapshotsResponse(javersQueryService.findSnapshots(jqlQuery));
     }
 }

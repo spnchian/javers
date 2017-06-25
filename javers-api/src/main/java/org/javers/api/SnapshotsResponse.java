@@ -9,16 +9,13 @@ import java.util.List;
  */
 public class SnapshotsResponse {
 
-    private List<CdoSnapshot> snapshots;
+    private List<CdoSnapshot> entries;
 
-    protected SnapshotsResponse() {
+    public SnapshotsResponse(List<CdoSnapshot> entries) {
+        this.entries = entries;
     }
 
-    public SnapshotsResponse(List<CdoSnapshot> snapshots) {
-        this.snapshots = snapshots;
-    }
-
-    public List<CdoSnapshot> getSnapshots() {
-        return snapshots;
+    public List<CdoSnapshot> getEntries() {
+        return entries;
     }
 }

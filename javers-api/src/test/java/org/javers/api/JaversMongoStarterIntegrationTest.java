@@ -2,12 +2,14 @@ package org.javers.api;
 
 import org.javers.core.Javers;
 import org.javers.core.commit.CommitMetadata;
+import org.javers.core.metamodel.object.CdoSnapshot;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -36,7 +38,7 @@ public class JaversMongoStarterIntegrationTest {
     }
 
     @Test
-    public void shouldGetSnapshotForGivenInstanceId() {
+    public void shouldGetSnapshotForGivenEntity() {
         //given
         DummyEntity dummyEntity = new DummyEntity(1);
 
@@ -59,9 +61,9 @@ public class JaversMongoStarterIntegrationTest {
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
 
         SnapshotsResponse snapshotsResponse = response.getBody();
-        assertThat(snapshotsResponse.getSnapshots()).hasSize(1);
+        assertThat(snapshotsResponse.getEntries()).hasSize(1);
 
-        CommitMetadata commitMetadata = snapshotsResponse.getSnapshots().get(0).getCommitMetadata();
+        CommitMetadata commitMetadata = snapshotsResponse.getEntries().get(0).getCommitMetadata();
         assertThat(commitMetadata.getProperties()).contains(entry("key", "ok"));
         assertThat(commitMetadata.getAuthor()).isEqualTo("unauthenticated");
     }

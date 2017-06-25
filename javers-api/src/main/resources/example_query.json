@@ -1,0 +1,8 @@
+{
+  "queryId": "asdas",
+  "response": {}
+}
+
+javers/v1/changes?instanceId=xyz&entityClass=xyz&property=xyz&limit=1&skip=1&author=xyz&commitProperty=xyz&commitDate=xyz&commitId=1&version=1&childValueObjects=true&newObjectChanges
+javers/v1/shadows
+javers/v1/snapshots

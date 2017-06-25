@@ -2,6 +2,7 @@ package org.javers.api;
 
 import org.javers.common.exception.JaversException;
 import org.javers.core.Javers;
+import org.javers.core.diff.Change;
 import org.javers.core.metamodel.object.CdoSnapshot;
 import org.javers.repository.jql.JqlQuery;
 import org.javers.repository.jql.QueryBuilder;
@@ -23,18 +24,8 @@ public class JaversQueryService {
         this.javers = javers;
     }
 
-    public List<CdoSnapshot> findSnapshots(String instanceId, String className) {
-        JqlQuery jqlQuery = QueryBuilder.byInstanceId(instanceId, quietlyClassForName(className)).build();
-
+    public List<CdoSnapshot> findSnapshots(JqlQuery jqlQuery) {
         return javers.findSnapshots(jqlQuery);
-    }
-
-    private Class<?> quietlyClassForName(String className) {
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new JaversException(e);
-        }
     }
 
 
