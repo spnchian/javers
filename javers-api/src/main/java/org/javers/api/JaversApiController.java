@@ -1,7 +1,7 @@
 package org.javers.api;
 
 import org.javers.repository.jql.JqlQuery;
-import org.javers.repository.jql.QueryBBBB;
+import org.javers.repository.jql.RequestParamsQueryBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +25,7 @@ public class JaversApiController {
     @ResponseBody
     public SnapshotsResponse snapshots(HttpServletRequest request) {
         Map<String, String[]> queryParameters = request.getParameterMap();
-        JqlQuery jqlQuery = QueryBBBB.parametersToJqlQuery(queryParameters);
+        JqlQuery jqlQuery = RequestParamsQueryBuilder.parametersToJqlQuery(queryParameters);
 
         return new SnapshotsResponse(javersQueryService.findSnapshots(jqlQuery));
     }
