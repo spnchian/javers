@@ -35,7 +35,7 @@ class SnapshotResponseMessageConverter extends AbstractHttpMessageConverter<Snap
 
     @Override
     protected SnapshotsResponse readInternal(Class<? extends SnapshotsResponse> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-        return throw new UnsupportedOperationException("");
+        return jsonConverter.fromJson(new InputStreamReader(inputMessage.getBody()), SnapshotsResponse.class);
     }
 
     @Override
