@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.javers.repository.jql.InstanceIdDTO.instanceId;
@@ -66,7 +67,21 @@ public class QueryBuilder {
      * </pre>
      */
     public static QueryBuilder byClass(Class... requiredClasses){
-        return new QueryBuilder(new ClassFilterDefinition(Sets.asSet(requiredClasses)));
+        return byClass(Sets.asSet(requiredClasses));
+    }
+
+    /**
+     * Query for selecting changes (or snapshots) made on
+     * any object (Entity or ValueObject) of given classes.
+     * <br/><br/>
+     *
+     * For example, last changes on any object of MyClass.class:
+     * <pre>
+     * javers.findChanges( QueryBuilder.byClass(classes).build() );
+     * </pre>
+     */
+    public static QueryBuilder byClass(Set<Class> requiredClasses){
+        return new QueryBuilder(new ClassFilterDefinition(requiredClasses));
     }
 
     /**
