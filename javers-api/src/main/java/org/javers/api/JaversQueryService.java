@@ -15,7 +15,7 @@ import java.util.List;
  * @author pawel szymczyk
  */
 @Component
-public class JaversQueryService {
+class JaversQueryService {
 
     private final Javers javers;
 

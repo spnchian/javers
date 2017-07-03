@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/javers")
-public class JaversApiController {
+class JaversApiController {
 
     private final JaversQueryService javersQueryService;
 
@@ -21,7 +21,7 @@ public class JaversApiController {
         this.javersQueryService = javersQueryService;
     }
 
-    @GetMapping(path = "/v1/snapshots", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/snapshots", produces = {MediaType.APPLICATION_JSON_VALUE, JaversMediaType.JAVERS_API_V1})
     @ResponseBody
     public SnapshotsResponse snapshots(HttpServletRequest request) {
         Map<String, String[]> queryParameters = request.getParameterMap();

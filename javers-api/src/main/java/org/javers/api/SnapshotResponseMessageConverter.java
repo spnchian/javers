@@ -19,11 +19,11 @@ class SnapshotResponseMessageConverter extends AbstractHttpMessageConverter<Snap
 
     private final JsonConverter jsonConverter;
 
-    public SnapshotResponseMessageConverter(Javers javers) {
+    SnapshotResponseMessageConverter(Javers javers) {
         this(javers.getJsonConverter());
     }
 
-    public SnapshotResponseMessageConverter(JsonConverter jsonConverter) {
+    SnapshotResponseMessageConverter(JsonConverter jsonConverter) {
         super(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON_UTF8);
         this.jsonConverter = jsonConverter;
     }
@@ -35,7 +35,7 @@ class SnapshotResponseMessageConverter extends AbstractHttpMessageConverter<Snap
 
     @Override
     protected SnapshotsResponse readInternal(Class<? extends SnapshotsResponse> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-        return jsonConverter.fromJson(new InputStreamReader(inputMessage.getBody()), SnapshotsResponse.class);
+        return throw new UnsupportedOperationException("");
     }
 
     @Override

@@ -56,10 +56,6 @@ class RequestParamsQueryBuilderTest extends Specification {
         javers.findChanges(jqlQuery)
     }
 
-    private Map<String, String[]> asQueryParameters(Map<String, String> params) {
-        Map<String, String[]> queryParams = 
-    }
-
     private String[] asStringArray(String... s) {
         String[] strings = s
         strings
