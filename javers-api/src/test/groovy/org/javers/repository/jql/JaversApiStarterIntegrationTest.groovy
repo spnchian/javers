@@ -12,7 +12,7 @@ import spock.lang.Specification
 
 @SpringBootTest(classes = [TestApplication], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class JaversMongoStarterIntegrationTest extends Specification {
+class JaversApiStarterIntegrationTest extends Specification {
 
     @Autowired
     private DummyEntityRepository dummyEntityRepository
@@ -24,7 +24,7 @@ class JaversMongoStarterIntegrationTest extends Specification {
     private Javers javers
 
     void setup() {
-        restTemplate.getRestTemplate().getMessageConverters().add(0, new SnapshotResponseMessageConverter(javers))
+        restTemplate.getRestTemplate().getMessageConverters().add(0, new SnapshotsTypeMessageConverter(javers))
     }
 
     def "should fetch snapshot for given entity"() {
@@ -41,7 +41,7 @@ class JaversMongoStarterIntegrationTest extends Specification {
         headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 
         when:
-        ResponseEntity<SnapshotsResponse> response = restTemplate.<SnapshotsResponse> exchange(builder.build().encode().toUri(),
+        ResponseEntity<SnapshotsResponse> response = restTemplate.exchange(builder.build().encode().toUri(),
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
                 SnapshotsResponse.class)

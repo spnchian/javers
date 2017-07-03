@@ -29,4 +29,7 @@ class JaversQueryService {
     }
 
 
+    public List<Change> findChanges(JqlQuery jqlQuery) {
+        return javers.findChanges(jqlQuery);
+    }
 }

@@ -7,15 +7,9 @@ import java.util.List;
 /**
  * @author pawel szymczyk
  */
-public class SnapshotsResponse {
-
-    private List<CdoSnapshot> entries;
+public class SnapshotsResponse extends JaversResponse<CdoSnapshot> {
 
     public SnapshotsResponse(List<CdoSnapshot> entries) {
-        this.entries = entries;
-    }
-
-    public List<CdoSnapshot> getEntries() {
-        return entries;
+        super(entries);
     }
 }

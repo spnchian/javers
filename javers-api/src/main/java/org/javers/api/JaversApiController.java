@@ -1,5 +1,7 @@
 package org.javers.api;
 
+import org.javers.core.diff.Change;
+import org.javers.core.metamodel.object.CdoSnapshot;
 import org.javers.repository.jql.JqlQuery;
 import org.javers.repository.jql.RequestParamsQueryBuilder;
 import org.springframework.http.MediaType;
@@ -31,5 +33,14 @@ class JaversApiController {
         JqlQuery jqlQuery = requestParamsQueryBuilder.apply(queryParameters);
 
         return new SnapshotsResponse(javersQueryService.findSnapshots(jqlQuery));
+    }
+
+    @GetMapping(path = "/changes", produces = {MediaType.APPLICATION_JSON_VALUE, JaversMediaType.JAVERS_API_V1})
+    @ResponseBody
+    public JaversResponse<Change> changes(HttpServletRequest request) {
+        Map<String, String[]> queryParameters = request.getParameterMap();
+        JqlQuery jqlQuery = requestParamsQueryBuilder.apply(queryParameters);
+
+        return new ChangesResponse(javersQueryService.findChanges(jqlQuery));
     }
 }

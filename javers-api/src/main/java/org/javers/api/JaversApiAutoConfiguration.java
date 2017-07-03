@@ -22,7 +22,7 @@ public class JaversApiAutoConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(0, new SnapshotResponseMessageConverter(javers));
+        converters.add(0, new SnapshotsTypeMessageConverter(javers));
         super.configureMessageConverters(converters);
     }
 

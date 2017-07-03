@@ -15,32 +15,32 @@ import java.io.InputStreamReader;
 /**
  * @author pawel szymczyk
  */
-class SnapshotResponseMessageConverter extends AbstractHttpMessageConverter<SnapshotsResponse> {
+abstract class AbstractJaversTypesMessageConverter<T extends JaversResponse> extends AbstractHttpMessageConverter<T> {
 
     private final JsonConverter jsonConverter;
 
-    SnapshotResponseMessageConverter(Javers javers) {
+    AbstractJaversTypesMessageConverter(Javers javers) {
         this(javers.getJsonConverter());
     }
 
-    SnapshotResponseMessageConverter(JsonConverter jsonConverter) {
+    private AbstractJaversTypesMessageConverter(JsonConverter jsonConverter) {
         super(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON_UTF8);
         this.jsonConverter = jsonConverter;
     }
 
     @Override
     protected boolean supports(Class<?> clazz) {
-        return SnapshotsResponse.class.equals(clazz);
+        return JaversResponse.class.isAssignableFrom(clazz);
     }
 
     @Override
-    protected SnapshotsResponse readInternal(Class<? extends SnapshotsResponse> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-        return jsonConverter.fromJson(new InputStreamReader(inputMessage.getBody()), SnapshotsResponse.class);
+    protected T readInternal(Class<? extends T> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+        return jsonConverter.fromJson(new InputStreamReader(inputMessage.getBody()), clazz);
     }
 
     @Override
-    protected void writeInternal(SnapshotsResponse snapshotsResponse, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-        String snapshotsResponseJson = jsonConverter.toJson(snapshotsResponse);
+    protected void writeInternal(T javersResponse, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+        String snapshotsResponseJson = jsonConverter.toJson(javersResponse);
         outputMessage.getBody().write(snapshotsResponseJson.getBytes());
     }
 }
