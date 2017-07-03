@@ -2,18 +2,13 @@ package org.javers.repository.jql
 
 import org.javers.api.*
 import org.javers.core.Javers
-import org.javers.core.commit.CommitMetadata
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.*
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.util.UriComponentsBuilder
 import spock.lang.Specification
-
-import static org.fest.assertions.api.Assertions.assertThat
-import static org.fest.assertions.api.Assertions.entry
 
 @SpringBootTest(classes = [TestApplication], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")

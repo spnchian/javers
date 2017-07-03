@@ -15,6 +15,9 @@ import java.util.Map;
 @RequestMapping("/javers")
 class JaversApiController {
 
+    private static final RequestParamsQueryBuilder requestParamsQueryBuilder =
+            new RequestParamsQueryBuilder();
+
     private final JaversQueryService javersQueryService;
 
     public JaversApiController(JaversQueryService javersQueryService) {
@@ -25,7 +28,7 @@ class JaversApiController {
     @ResponseBody
     public SnapshotsResponse snapshots(HttpServletRequest request) {
         Map<String, String[]> queryParameters = request.getParameterMap();
-        JqlQuery jqlQuery = RequestParamsQueryBuilder.parametersToJqlQuery(queryParameters);
+        JqlQuery jqlQuery = requestParamsQueryBuilder.apply(queryParameters);
 
         return new SnapshotsResponse(javersQueryService.findSnapshots(jqlQuery));
     }

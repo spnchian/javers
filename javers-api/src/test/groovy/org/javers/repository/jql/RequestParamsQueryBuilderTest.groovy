@@ -7,9 +7,13 @@ import org.javers.core.JaversBuilder
 import org.javers.core.diff.Change
 import org.javers.core.metamodel.object.InstanceId
 import org.javers.core.metamodel.object.ValueObjectId
+import spock.lang.Shared
 import spock.lang.Specification
 
 class RequestParamsQueryBuilderTest extends Specification {
+
+    @Shared
+    def queryBuilder = new RequestParamsQueryBuilder()
 
     def "should create entity query"() {
         given:
@@ -19,7 +23,7 @@ class RequestParamsQueryBuilderTest extends Specification {
         Map<String, String[]> queryParams = asQueryParameters(["instanceId": givenInstanceId,
                                              "className": className])
         when:
-        JqlQuery jqlQuery = RequestParamsQueryBuilder.parametersToJqlQuery(queryParams)
+        JqlQuery jqlQuery = queryBuilder.apply(queryParams)
         compile(javers, jqlQuery)
 
         then:
@@ -40,7 +44,7 @@ class RequestParamsQueryBuilderTest extends Specification {
                                                  "ownerEntityClass": className,
                                                  "path": path])
         when:
-        JqlQuery jqlQuery = RequestParamsQueryBuilder.parametersToJqlQuery(queryParams)
+        JqlQuery jqlQuery = queryBuilder.apply(queryParams)
         compile(javers, jqlQuery)
 
         then:
@@ -61,7 +65,7 @@ class RequestParamsQueryBuilderTest extends Specification {
             Map<String, String[]> queryParams = asQueryParameters(["ownerEntityClass": className,
                                                                    "path": path])
         when:
-            JqlQuery jqlQuery = RequestParamsQueryBuilder.parametersToJqlQuery(queryParams)
+            JqlQuery jqlQuery = queryBuilder.apply(queryParams)
             compile(javers, jqlQuery)
 
         then:
@@ -79,7 +83,7 @@ class RequestParamsQueryBuilderTest extends Specification {
             String valueObjectClassName = DummyValueObject.class.name
             Map<String, String[]> queryParams = ["requiredClasses": asStringArray(entityClassName, valueObjectClassName)]
         when:
-            JqlQuery jqlQuery = RequestParamsQueryBuilder.parametersToJqlQuery(queryParams)
+            JqlQuery jqlQuery = queryBuilder.apply(queryParams)
             compile(javers, jqlQuery)
 
         then:
@@ -97,7 +101,7 @@ class RequestParamsQueryBuilderTest extends Specification {
             Javers javers = JaversBuilder.javers().build()
             Map<String, String[]> queryParams = [:]
         when:
-            JqlQuery jqlQuery = RequestParamsQueryBuilder.parametersToJqlQuery(queryParams)
+            JqlQuery jqlQuery = queryBuilder.apply(queryParams)
             compile(javers, jqlQuery)
 
         then:
