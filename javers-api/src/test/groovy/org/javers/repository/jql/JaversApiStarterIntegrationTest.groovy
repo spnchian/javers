@@ -114,6 +114,8 @@ class JaversApiStarterIntegrationTest extends Specification {
         response.getStatusCodeValue() == 200
 
         ShadowsResponse<ShadowsResponse<DummyEntity>> shadows = response.getBody()
-        int a = 0
+        shadows.entries.size() == 2
+        shadows.entries[0].get().name == "name_v2"
+        shadows.entries[1].get().name == "name_v1"
     }
 }
