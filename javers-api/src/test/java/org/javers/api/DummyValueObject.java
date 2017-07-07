@@ -1,6 +1,9 @@
 package org.javers.api;
 
 
+/**
+ * @author pawel szymczyk
+ */
 public class DummyValueObject {
 
     private final int value;

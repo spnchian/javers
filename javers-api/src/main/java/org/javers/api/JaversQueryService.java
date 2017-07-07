@@ -1,11 +1,10 @@
 package org.javers.api;
 
-import org.javers.common.exception.JaversException;
 import org.javers.core.Javers;
 import org.javers.core.diff.Change;
 import org.javers.core.metamodel.object.CdoSnapshot;
 import org.javers.repository.jql.JqlQuery;
-import org.javers.repository.jql.QueryBuilder;
+import org.javers.shadow.Shadow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,5 +30,9 @@ class JaversQueryService {
 
     public List<Change> findChanges(JqlQuery jqlQuery) {
         return javers.findChanges(jqlQuery);
+    }
+
+    public List<Shadow<Object>> findShadows(JqlQuery jqlQuery) {
+        return javers.findShadows(jqlQuery);
     }
 }

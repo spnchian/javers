@@ -8,16 +8,17 @@ import org.javers.core.metamodel.annotation.Id;
 public class DummyEntity {
 
     @Id
-    private final int id;
-    private final DummyValueObject dummyValueObject;
+    private int id;
+    private String name;
+    private DummyValueObject dummyValueObject;
 
-    public DummyEntity(int id) {
-        this.id = id;
-        this.dummyValueObject = null;
+    private DummyEntity() {
+
     }
 
-    public DummyEntity(int id, DummyValueObject dummyValueObject) {
+    public DummyEntity(int id, String name, DummyValueObject dummyValueObject) {
         this.id = id;
+        this.name = name;
         this.dummyValueObject = dummyValueObject;
     }
 
@@ -26,7 +27,23 @@ public class DummyEntity {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public DummyValueObject getDummyValueObject() {
         return dummyValueObject;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDummyValueObject(DummyValueObject dummyValueObject) {
+        this.dummyValueObject = dummyValueObject;
     }
 }
