@@ -1,7 +1,12 @@
 package org.javers.repository.jql;
 
 import org.javers.common.reflection.ReflectionUtil;
+import org.javers.core.commit.CommitId;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -18,25 +23,92 @@ public class RequestParamsQueryBuilder implements Function<Map<String, String[]>
     public static final String OWNER_ENTITY_CLASS = "ownerEntityClass";
     public static final String PATH = "path";
     public static final String REQUIRED_CLASS = "requiredClasses";
+    public static final String PROPERTY_NAME = "propertyName";
+    public static final String LIMIT = "limit";
+    public static final String SKIP = "skip";
+    public static final String AUTHOR = "author";
+    public static final String COMMIT_PROPERTY = "commitProperty";
+    public static final String FROM = "from";
+    public static final String TO = "to";
+    public static final String COMMIT_ID = "commitId";
+    public static final String VERSION = "version";
+    public static final String CHILD_VALUE_OBJECTS = "childValueObjects";
+    public static final String NEW_OBJECT_CHANGES = "newObjectChanges";
 
     @Override
     public JqlQuery apply(Map<String, String[]> parameters) {
-        QueryBuilder queryBuilder = null;
-        queryBuilder = appendObjectIdentifier(parameters, queryBuilder);
+        final QueryBuilder queryBuilder = appendObjectIdentifier(parameters);
 
-        //TODO any domain object
+        if (parameters.containsKey(PROPERTY_NAME)) {
+            queryBuilder.andProperty(parameters.get(PROPERTY_NAME)[0]);
+        }
+
+        if (parameters.containsKey(LIMIT)) {
+            queryBuilder.limit(Integer.valueOf(parameters.get(LIMIT)[0]));
+        }
+
+        if (parameters.containsKey(SKIP)) {
+            queryBuilder.skip(Integer.valueOf(parameters.get(SKIP)[0]));
+        }
+
+        if (parameters.containsKey(AUTHOR)) {
+            queryBuilder.byAuthor(parameters.get(AUTHOR)[0]);
+        }
+
+        if (parameters.containsKey(COMMIT_PROPERTY)) {
+            Arrays.stream(parameters.get(COMMIT_PROPERTY))
+                    .forEach(x -> {
+                        //TODO check array
+                        String[] split = x.split(";");
+                        queryBuilder.withCommitProperty(split[0], split[1]);
+                    });
+        }
+
+        if (parameters.containsKey(FROM)) {
+            //TODO LocalDate
+            LocalDateTime fromDateTime = Instant.ofEpochMilli(Long.parseLong(parameters.get(FROM)[0]))
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            queryBuilder.from(fromDateTime);
+        }
+
+        if (parameters.containsKey(TO)) {
+            //TODO LocalDate
+            LocalDateTime fromDateTime = Instant.ofEpochMilli(Long.parseLong(parameters.get(TO)[0]))
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            queryBuilder.to(fromDateTime);
+        }
+
+        if (parameters.containsKey(COMMIT_ID)) {
+            Arrays.stream(parameters.get(COMMIT_ID))
+                    .forEach(x -> queryBuilder.withCommitId(CommitId.valueOf(x)));
+        }
+
+        if (parameters.containsKey(VERSION)) {
+            queryBuilder.withVersion(Long.valueOf(parameters.get(VERSION)[0]));
+        }
+
+        if (parameters.containsKey(CHILD_VALUE_OBJECTS)) {
+            queryBuilder.withChildValueObjects();
+        }
+
+        if (parameters.containsKey(NEW_OBJECT_CHANGES)) {
+            queryBuilder.withNewObjectChanges();
+        }
 
         return queryBuilder.build();
     }
 
-    private QueryBuilder appendObjectIdentifier(Map<String, String[]> parameters, QueryBuilder queryBuilder) {
+    private QueryBuilder appendObjectIdentifier(Map<String, String[]> parameters) {
+        QueryBuilder queryBuilder;
         if (isQueryForEntity(parameters)) {
             queryBuilder = queryForEntity(parameters);
         } else if (isValueObjectIdQuery(parameters)) {
             queryBuilder = queryForValueObjectId(parameters);
         } else if (isValueObjectQuery(parameters)) {
             queryBuilder = queryForValueObject(parameters);
-        }else if (isClassQuery(parameters)) {
+        } else if (isClassQuery(parameters)) {
             queryBuilder = queryForClass(parameters);
         } else {
             queryBuilder = QueryBuilder.anyDomainObject();

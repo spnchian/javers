@@ -30,13 +30,14 @@ class JaversApiStarterIntegrationTest extends Specification {
     }
 
     def "should fetch snapshot for given entity"() {
+        def id = 1
         given:
-        DummyEntity dummyEntity = new DummyEntity(1)
+        DummyEntity dummyEntity = new DummyEntity(id, "name", null)
 
         dummyEntityRepository.save(dummyEntity)
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/javers/snapshots")
-                .queryParam("instanceId", "1")
+                .queryParam("instanceId", id)
                 .queryParam("className", DummyEntity.class.getName())
 
         HttpHeaders headers = new HttpHeaders()
@@ -53,22 +54,19 @@ class JaversApiStarterIntegrationTest extends Specification {
 
         SnapshotsResponse snapshotsResponse = response.getBody()
         snapshotsResponse.entries.size() == 1
-
-        with(snapshotsResponse.entries.first().commitMetadata) { it ->
-            it.properties.containsKey("key")
-            it.properties.containsValue("ok")
-            it.author == "unauthenticated"
-        }
+        snapshotsResponse.entries[0].getGlobalId().value() == "org.javers.api.DummyEntity/1"
+        snapshotsResponse.entries[0].getPropertyValue("name")
     }
 
     def "should fetch changes for given entity"() {
+        def id = 2
         given:
-        def saved = dummyEntityRepository.save(new DummyEntity(1, "name_v1", null))
+        def saved = dummyEntityRepository.save(new DummyEntity(id, "name_v1", null))
         saved.name = "name_v2"
         dummyEntityRepository.save(saved)
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/javers/changes")
-                .queryParam("instanceId", "1")
+                .queryParam("instanceId", id)
                 .queryParam("className", DummyEntity.class.getName())
 
         HttpHeaders headers = new HttpHeaders()
@@ -93,12 +91,13 @@ class JaversApiStarterIntegrationTest extends Specification {
     }
 
     def "should fetch shadows for given entity"() {
+        def id = 3
         given:
-        dummyEntityRepository.save(new DummyEntity(1, "name_v1", null))
-        dummyEntityRepository.save(new DummyEntity(1, "name_v2", null))
+        dummyEntityRepository.save(new DummyEntity(id, "name_v1", null))
+        dummyEntityRepository.save(new DummyEntity(id, "name_v2", null))
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/javers/shadows")
-                .queryParam("instanceId", "1")
+                .queryParam("instanceId", id)
                 .queryParam("className", DummyEntity.class.getName())
 
         HttpHeaders headers = new HttpHeaders()
