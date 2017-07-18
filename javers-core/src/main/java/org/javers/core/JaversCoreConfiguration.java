@@ -2,6 +2,9 @@ package org.javers.core;
 
 import org.javers.common.validation.Validate;
 import org.javers.core.diff.ListCompareAlgorithm;
+import org.javers.core.diff.custom.CustomPropertyComparator;
+
+import java.util.HashMap;
 
 /**
  * @author bartosz walacik
@@ -15,6 +18,8 @@ public class JaversCoreConfiguration {
     private boolean newObjectsSnapshot = false;
 
     private CommitIdGenerator commitIdGenerator = CommitIdGenerator.SYNCHRONIZED_SEQUENCE;
+
+    private HashMap<String,CustomPropertyComparator> pathTocomparator;
 
     JaversCoreConfiguration withMappingStyle(MappingStyle mappingStyle) {
         Validate.argumentIsNotNull(mappingStyle);
@@ -52,5 +57,19 @@ public class JaversCoreConfiguration {
 
     public CommitIdGenerator getCommitIdGenerator() {
         return commitIdGenerator;
+    }
+
+    public HashMap<String,CustomPropertyComparator> getPathTocomparator() {
+        if(pathTocomparator == null){
+            pathTocomparator = new HashMap<>();
+        }
+        return pathTocomparator;
+    }
+
+    public void addPathToComparator(String path, CustomPropertyComparator comparator) {
+        if(pathTocomparator == null){
+            pathTocomparator = new HashMap<>();
+        }
+        pathTocomparator.put(path, comparator);
     }
 }

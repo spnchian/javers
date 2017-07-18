@@ -32,7 +32,8 @@ public class DiffAppendersModule extends LateInstantiatingModule {
                 ReferenceChangeAppender.class,
                 OptionalChangeAppender.class,
                 ValueChangeAppender.class,
-                CollectionChangeFakeAppender.class
+                CollectionChangeFakeAppender.class,
+                PathBasedAppender.class
         );
     }
 }

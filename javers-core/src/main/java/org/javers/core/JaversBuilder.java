@@ -642,6 +642,11 @@ public class JaversBuilder extends AbstractContainerBuilder {
         addComponent(dateProvider);
     }
 
+    public JaversBuilder registerPathToComparator(String path, CustomPropertyComparator comparator){
+        coreConfiguration().addPathToComparator(path,comparator);
+        return this;
+    }
+
     private void bootRepository(){
         if (repository == null){
             logger.info("using fake InMemoryRepository, register actual implementation via JaversBuilder.registerJaversRepository()");

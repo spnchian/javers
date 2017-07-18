@@ -1,5 +1,6 @@
 package org.javers.core.diff.custom;
 
+import domain.EverythingComparator;
 import org.javers.core.diff.NodePair;
 import org.javers.core.diff.appenders.PropertyChangeAppender;
 import org.javers.core.diff.changetype.PropertyChange;
@@ -21,6 +22,13 @@ public class CustomToNativeAppenderAdapter<T, C extends PropertyChange> implemen
     @Override
     public boolean supports(JaversType propertyType) {
         return propertyType.getBaseJavaClass().equals(propertyJavaClass);
+    }
+
+    public boolean supports(JaversType propertyType,NodePair pair){
+        if (this.delegate instanceof EverythingComparator){
+            ((EverythingComparator) this.delegate).hasPath(pair.getGlobalId().toString());
+        }
+        return false;
     }
 
     @Override

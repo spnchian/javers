@@ -7,8 +7,10 @@ import org.javers.core.Javers;
 import org.javers.core.JaversCoreConfiguration;
 import org.javers.core.commit.CommitMetadata;
 import org.javers.core.diff.appenders.NodeChangeAppender;
+import org.javers.core.diff.appenders.PathBasedAppender;
 import org.javers.core.diff.appenders.PropertyChangeAppender;
 import org.javers.core.diff.changetype.ObjectRemoved;
+import org.javers.core.diff.custom.CustomToNativeAppenderAdapter;
 import org.javers.core.graph.LiveGraph;
 import org.javers.core.graph.LiveGraphFactory;
 import org.javers.core.graph.ObjectNode;
@@ -143,11 +145,20 @@ public class DiffFactory {
 
     private void appendChanges(DiffBuilder diff, NodePair pair, JaversProperty property, JaversType javersType, Optional<CommitMetadata> commitMetadata) {
         for (PropertyChangeAppender appender : propertyChangeAppender) {
-            if (! appender.supports(javersType)){
+//            if(!appender.supports(javersType)){
+//                continue;
+//            }
+            if ((! appender.supports(javersType)) && !((appender instanceof PathBasedAppender) && ((PathBasedAppender) appender).supports(property,pair,javersCoreConfiguration))){
                 continue;
             }
 
-            final Change change = appender.calculateChanges(pair, property);
+            final Change change;
+            if(appender instanceof PathBasedAppender){
+                change = ((PathBasedAppender) appender).calculateChanges(pair,property,javersCoreConfiguration);
+            }else{
+                change = appender.calculateChanges(pair, property);
+            }
+
             if (change != null) {
                 diff.addChange(change, pair.getRight().wrappedCdo());
                 commitMetadata.ifPresent(cm -> change.bindToCommit(cm));
